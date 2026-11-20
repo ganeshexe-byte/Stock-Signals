@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scanners – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div><h1>Scanners</h1><p class="sub">Stocks that match simple, visible rules. Filters for study, not recommendations.</p></div>
+        <span class="help" id="asOf"></span>
+      </header>
+
+      <div class="row">
+        <div class="seg" id="typeTabs" role="tablist" aria-label="Scanner type">
+          <button type="button" role="tab" data-t="intraday">Intraday</button><button type="button" role="tab" data-t="swing">Swing</button><button type="button" role="tab" data-t="long">Long term</button>
+        </div>
+        <label class="help">Bias <select id="fBias" class="input" style="width:auto"><option value="">All</option><option>Bullish</option><option>Bearish</option></select></label>
+        <label class="help">Sector <select id="fSector" class="input" style="width:auto"><option value="">All</option></select></label>
+        <div class="search" style="min-width:150px"><input id="fText" type="search" placeholder="Filter symbol" aria-label="Filter by symbol" /></div>
+      </div>
+
+      <details class="card" id="rulesBox"><summary>How this scanner decides</summary><ul class="kv" id="rules"></ul></details>
+
+      <div id="progressBox" hidden><div class="help" id="progressText"></div><div class="progress" role="progressbar" aria-label="Scan progress"><i id="progressBar" style="width:0"></i></div></div>
+
+      <article class="card">
+        <div class="table-wrap"><table class="table" id="tbl"><thead id="thead"></thead><tbody id="tbody"><tr><td class="empty">Loading…</td></tr></tbody></table></div>
+        <p class="help" id="foot" style="margin-top:10px"></p>
+      </article>
+
+    </main>
+  </div>
+
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/pages/scanners.js"></script>
+</body>
+</html>

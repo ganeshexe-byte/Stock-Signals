@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Analysis – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div><h1>Daily analysis</h1><p class="sub">Pre-market, live and post-market view, plus a history of what the app said each day.</p></div>
+        <button type="button" class="btn ghost" id="snapBtn">Save today's snapshot</button>
+      </header>
+
+      <article class="card">
+        <h3 class="card-title">All indices <span class="muted small">current condition</span></h3>
+        <div class="table-wrap"><table class="table"><thead><tr><th class="l">Index</th><th class="num">Last</th><th class="num">Change</th><th class="l">Intraday</th><th class="l">Short term</th><th class="l">Medium term</th><th class="l">Overall</th></tr></thead><tbody id="allIdx"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+      </article>
+
+      <section class="section">
+        <div class="row"><div class="seg fit" id="indexTabs" role="tablist" aria-label="Index"></div><span class="help" id="asOf"></span></div>
+        <div class="split-wide">
+          <article class="card">
+            <div class="tab-panel" id="phaseTabs">
+              <div class="seg fit" role="tablist"><button type="button" data-tab="pre">Pre-market</button><button type="button" data-tab="live" class="on">Live</button><button type="button" data-tab="post">Post-market</button></div>
+              <div data-panel="pre" id="phasePre"><p class="empty">Loading…</p></div><div data-panel="live" id="phaseLive"></div><div data-panel="post" id="phasePost"></div>
+            </div>
+          </article>
+          <article class="card"><h3 class="card-title">Key levels</h3><div id="levels"></div></article>
+        </div>
+        <div class="grid-3" id="conds"></div>
+      </section>
+
+      <article class="card">
+        <h3 class="card-title">History <span class="muted small">saved at the close each day (about 15:35 IST), or with the button above</span></h3>
+        <div id="histSummary" class="help" style="margin-bottom:10px"></div>
+        <div class="table-wrap"><table class="table"><thead><tr><th class="l">Date</th><th class="l">Overall</th><th class="l">Intraday</th><th class="l">Short</th><th class="l">Medium</th><th class="num">Nifty close</th><th class="num">Day</th><th class="num">Next session</th><th class="l">Matched?</th></tr></thead><tbody id="hist"><tr><td colspan="9" class="empty">Loading…</td></tr></tbody></table></div>
+        <p class="help" style="margin-top:10px">"Matched" means Bullish was followed by a Nifty gain, Bearish by a fall, or Sideways by a move under 0.3%. It is a plain tally of what happened, not evidence that the rules predict the market, especially with few days saved.</p>
+      </article>
+
+    </main>
+  </div>
+
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/pages/analysis.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Index Analysis – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div>
+          <div class="seg fit" id="indexTabs" role="tablist" aria-label="Index"></div>
+        </div>
+        <span class="help" id="asOf"></span>
+      </header>
+
+      <section class="card" id="hero" aria-live="polite">
+        <div class="grid-2" style="align-items:center">
+          <div>
+            <h1 id="title" style="margin:0 0 4px;font-size:20px">Loading…</h1>
+            <div class="big-price" id="price">–</div>
+            <div class="mono" id="change" style="font-size:16px;margin-top:4px">–</div>
+          </div>
+          <div class="grid-2">
+            <div><span class="help">Today's range</span><div id="dayRange"></div></div>
+            <div><span class="help">52-week range</span><div id="yearRange"></div></div>
+            <div class="stat"><span>Open</span><b id="sOpen">–</b></div>
+            <div class="stat"><span>Previous close</span><b id="sClose">–</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="condTitle">
+        <h2 class="section-title" id="condTitle">Market condition <span class="muted small" id="overallText"></span></h2>
+        <div class="grid-3" id="conds"></div>
+        <p class="help">Each label is a rule-based snapshot of trend from the checks listed, not a forecast. The rules are in <span class="code-inline">public/shared/condition.js</span>.</p>
+      </section>
+
+      <section class="split-wide">
+        <article class="card">
+          <div class="row" style="margin-bottom:10px">
+            <div class="seg" id="tfSeg" role="group" aria-label="Timeframe">
+              <button type="button" data-iv="5m">5m</button><button type="button" data-iv="15m" class="on">15m</button>
+              <button type="button" data-iv="1h">1h</button><button type="button" data-iv="1d">1D</button><button type="button" data-iv="1w">1W</button>
+            </div>
+            <div class="row grow" id="overlayChips"></div>
+          </div>
+          <div class="row" id="customChips" style="margin-bottom:10px"></div>
+          <div id="chart"></div>
+          <p class="note err" id="chartErr" hidden></p>
+        </article>
+        <div class="stack">
+          <article class="card"><h3 class="card-title">Key levels</h3><div id="levels"></div></article>
+          <article class="card"><h3 class="card-title">Technical indicators</h3><div id="indicators"></div></article>
+        </div>
+      </section>
+
+      <section class="grid-2" id="lowerGrid">
+        <article class="card" id="optionsCard"><h3 class="card-title">Options: open interest <span class="muted small">PCR and walls</span></h3><div id="options"><p class="empty">Loading…</p></div></article>
+        <article class="card" id="moversCard"><h3 class="card-title">Index members <span class="muted small">live</span></h3><div id="movers"></div></article>
+      </section>
+
+      <section class="card" id="analysisCard">
+        <h3 class="card-title">Daily analysis</h3>
+        <div class="tab-panel" id="phaseTabs">
+          <div class="seg fit" role="tablist"><button type="button" data-tab="pre">Pre-market</button><button type="button" data-tab="live" class="on">Live</button><button type="button" data-tab="post">Post-market</button></div>
+          <div data-panel="pre" id="phasePre"></div><div data-panel="live" id="phaseLive"></div><div data-panel="post" id="phasePost"></div>
+        </div>
+      </section>
+
+      <p class="disclaimer">Paper-trading and learning tool. Conditions, levels and scanner results are rule-based readings of price data, not investment advice. Data may be delayed or simulated; check the banner at the top.</p>
+    </main>
+  </div>
+
+  <script src="/vendor/lightweight-charts.js"></script>
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/pages/market.js"></script>
+</body>
+</html>

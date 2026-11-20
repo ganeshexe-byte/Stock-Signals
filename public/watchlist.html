@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Watchlist – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div><h1>Watchlist</h1><p class="sub">Live prices for the stocks you follow. Search any NSE stock to add it.</p></div>
+        <div class="row">
+          <div class="search"><input id="addInput" type="text" placeholder="Add symbol, e.g. INFY" aria-label="Add symbol to watchlist" /></div>
+          <label class="help">Sort <select id="sortSel" class="input" style="width:auto"><option value="added">Added order</option><option value="pctDesc">Biggest gainers</option><option value="pctAsc">Biggest losers</option><option value="symbol">A to Z</option></select></label>
+        </div>
+      </header>
+
+      <article class="card">
+        <div class="table-wrap"><table class="table"><thead><tr><th class="l">Symbol</th><th class="num">LTP</th><th class="num">Change</th><th class="num">%</th><th class="l" style="min-width:150px">Day range</th><th class="num">Volume</th><th class="num"></th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+      </article>
+
+    </main>
+  </div>
+
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/pages/watchlist.js"></script>
+</body>
+</html>

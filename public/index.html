@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StockLens – Market Analysis &amp; Paper Trading</title>
+  <meta name="description" content="Real-time market analysis and paper trading for Indian stocks." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <section class="section" aria-labelledby="ovTitle">
+        <h2 class="section-title" id="ovTitle">Market overview <span class="muted small">Select an index for the full analysis</span></h2>
+        <div class="grid-3" id="indexCards"></div>
+      </section>
+
+      <section class="split">
+        <article class="card">
+          <header class="chart-toolbar">
+            <div class="symbol"><strong>NIFTY 50</strong><span class="muted">NSE · Index</span></div>
+            <div class="seg" id="tfSeg" role="group" aria-label="Timeframe">
+              <button type="button" data-iv="5m">5m</button><button type="button" data-iv="15m" class="on">15m</button><button type="button" data-iv="1h">1h</button><button type="button" data-iv="1d">1D</button>
+            </div>
+            <div class="toolbar-actions"><a class="btn ghost" href="charts.html?s=NIFTY">Open full chart</a></div>
+          </header>
+          <div id="chart"></div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Daily analysis <span class="muted small">Nifty 50</span></h3>
+          <div class="tab-panel" id="phaseTabs">
+            <div class="seg" role="tablist" style="width:100%"><button type="button" data-tab="pre" style="flex:1">Pre-market</button><button type="button" data-tab="live" class="on" style="flex:1">Live</button><button type="button" data-tab="post" style="flex:1">Post-market</button></div>
+            <div data-panel="pre" id="phasePre"><p class="empty">Loading…</p></div><div data-panel="live" id="phaseLive"></div><div data-panel="post" id="phasePost"></div>
+          </div>
+          <p style="margin-top:10px"><a class="help" href="analysis.html">Full daily analysis and history →</a></p>
+        </article>
+      </section>
+
+      <section class="section" aria-labelledby="scTitle">
+        <h2 class="section-title" id="scTitle">Scanners <span class="muted small">Rule-based matches, not recommendations</span></h2>
+        <div class="grid-3" id="scanCards"></div>
+      </section>
+
+      <section class="split-eq">
+        <article class="card">
+          <header class="card-head"><h3>Paper trading</h3><span class="pill paper">Virtual money</span></header>
+          <div class="stats" id="paperStats"></div>
+          <div class="table-wrap"><table class="table"><thead><tr><th class="l">Symbol</th><th class="l">Type</th><th class="num">Qty</th><th class="num">Avg</th><th class="num">LTP</th><th class="num">P&amp;L</th></tr></thead><tbody id="paperPos"></tbody></table></div>
+          <p style="margin-top:12px"><a class="btn primary" href="paper.html">Open order ticket</a></p>
+        </article>
+        <div class="stack">
+          <article class="card"><h3 class="card-title">Sector strength <span class="muted small">Nifty 50 members</span></h3><ul class="sectors" id="sectors"><li class="empty">Loading…</li></ul></article>
+          <article class="card"><h3 class="card-title">Market breadth <span class="muted small">Nifty 50 members</span></h3><div id="breadth"><p class="empty">Loading…</p></div></article>
+        </div>
+      </section>
+
+      <p class="disclaimer">StockLens is a paper-trading and market-analysis tool for learning. Scanner results are rule-based filters, not investment advice or recommendations. Data may be delayed or simulated; check the banner at the top.</p>
+    </main>
+  </div>
+
+  <script src="/vendor/lightweight-charts.js"></script>
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+</body>
+</html>

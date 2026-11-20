@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Charts – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div class="row">
+          <div class="search"><label class="help" for="symInput" style="display:block;margin-bottom:2px">Symbol</label><input id="symInput" type="text" value="NIFTY" aria-label="Search symbol" /></div>
+          <div><div class="mono" id="qPrice" style="font-size:24px">–</div><div class="mono" id="qChg">–</div></div>
+        </div>
+        <div class="row">
+          <a class="btn buy" id="buyBtn" href="paper.html">Paper buy</a>
+          <a class="btn sell" id="sellBtn" href="paper.html">Paper sell</a>
+          <button type="button" class="btn ghost" id="watchBtn">+ Watchlist</button>
+        </div>
+      </header>
+
+      <article class="card">
+        <div class="row" style="margin-bottom:10px">
+          <div class="seg" id="tfSeg" role="group" aria-label="Timeframe">
+            <button type="button" data-iv="1m">1m</button><button type="button" data-iv="5m">5m</button><button type="button" data-iv="15m" class="on">15m</button>
+            <button type="button" data-iv="30m">30m</button><button type="button" data-iv="1h">1h</button><button type="button" data-iv="1d">1D</button><button type="button" data-iv="1w">1W</button>
+          </div>
+          <div class="row grow" id="overlayChips"></div>
+        </div>
+        <div class="row" id="customChips" style="margin-bottom:10px"></div>
+        <div id="chart"></div>
+        <p class="note err" id="chartErr" hidden></p>
+      </article>
+
+      <section class="split-wide">
+        <article class="card" id="editorCard">
+          <h3 class="card-title">Custom indicator <span class="muted small">written in JavaScript, runs in your browser only</span></h3>
+          <form class="form" id="editor">
+            <div class="form-grid">
+              <label>Name<input id="cName" type="text" maxlength="40" placeholder="My indicator" required /></label>
+              <label>Start from an example<select id="cExample"><option value="">Choose…</option></select></label>
+            </div>
+            <label>Code<textarea id="cCode" class="code" spellcheck="false" aria-describedby="codeHelp"></textarea></label>
+            <p class="note err" id="cErr" hidden></p>
+            <div class="row">
+              <button type="submit" class="btn primary">Save and show on chart</button>
+              <button type="button" class="btn ghost" id="cNew">New</button>
+              <button type="button" class="btn danger" id="cDelete" hidden>Delete</button>
+            </div>
+          </form>
+          <p class="help" id="codeHelp">Your code receives <span class="code-inline">candles</span> (array of <span class="code-inline">{t,o,h,l,c,v}</span>) and <span class="code-inline">ta</span> (<span class="code-inline">ema sma rsi macd bollinger atr vwap</span> and more). Return <span class="code-inline">{ name, pane: 'overlay' | 'separate', values }</span> with one value per candle (use <span class="code-inline">null</span> where undefined), or <span class="code-inline">lines: [...]</span> for several lines, plus optional <span class="code-inline">markers: [{index, position: 'above'|'below', text}]</span>. Use <span class="code-inline">type: 'hist'</span> for bars. Saved indicators stay in this browser and appear on the index pages too.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Saved indicators</h3>
+          <ul class="kv" id="savedList"></ul>
+          <p class="help" style="margin-top:10px">Only run code you wrote or trust: it executes with the same access as this page.</p>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/vendor/lightweight-charts.js"></script>
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/pages/charts.js"></script>
+</body>
+</html>

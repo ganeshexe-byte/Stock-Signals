@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paper Trading – StockLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="market-bar" id="marketBar" aria-label="Market status"></header>
+  <div class="layout">
+    <nav class="sidebar" id="nav" aria-label="Main navigation"></nav>
+    <main class="content">
+
+      <header class="page-head">
+        <div><h1>Paper trading <span class="pill paper">Virtual money</span></h1><p class="sub">Practice with live prices. No real orders are ever sent to a broker.</p></div>
+        <button type="button" class="btn ghost danger" id="resetBtn">Reset account</button>
+      </header>
+
+      <section class="grid-6" id="stats" aria-label="Account summary"></section>
+
+      <section class="split-wide">
+        <div class="stack">
+          <article class="card">
+            <div class="row" style="justify-content:space-between;margin-bottom:8px"><h3 style="margin:0">Chart</h3><div class="seg" id="tfSeg" role="group" aria-label="Timeframe"><button type="button" data-iv="1m">1m</button><button type="button" data-iv="5m" class="on">5m</button><button type="button" data-iv="15m">15m</button><button type="button" data-iv="1d">1D</button></div></div>
+            <div id="chart"></div>
+          </article>
+
+          <article class="card">
+            <h3 class="card-title">Open positions</h3>
+            <div class="table-wrap"><table class="table"><thead><tr><th class="l">Symbol</th><th class="l">Type</th><th class="num">Qty</th><th class="num">Avg</th><th class="num">LTP</th><th class="num">P&amp;L</th><th class="num">%</th><th class="num"></th></tr></thead><tbody id="positions"></tbody></table></div>
+          </article>
+
+          <article class="card">
+            <div class="tab-panel" id="histTabs">
+              <div class="seg fit" role="tablist"><button type="button" data-tab="open" class="on">Open orders</button><button type="button" data-tab="orders">Order history</button><button type="button" data-tab="trades">Closed trades</button></div>
+              <div data-panel="open" class="table-wrap"><table class="table"><thead><tr><th class="l">Time</th><th class="l">Symbol</th><th class="l">Side</th><th class="l">Type</th><th class="num">Price / trigger</th><th class="num">Qty</th><th class="l">Product</th><th class="num"></th></tr></thead><tbody id="openOrders"></tbody></table></div>
+              <div data-panel="orders" class="table-wrap"><table class="table"><thead><tr><th class="l">Time</th><th class="l">Symbol</th><th class="l">Side</th><th class="l">Type</th><th class="num">Qty</th><th class="num">Fill</th><th class="num">Charges</th><th class="l">Status</th></tr></thead><tbody id="orderHist"></tbody></table></div>
+              <div data-panel="trades" class="table-wrap"><table class="table"><thead><tr><th class="l">Closed</th><th class="l">Symbol</th><th class="l">Side</th><th class="num">Qty</th><th class="num">Entry</th><th class="num">Exit</th><th class="num">Gross</th><th class="num">Charges</th><th class="num">Net</th><th class="l">Market at entry</th><th class="l">Note</th></tr></thead><tbody id="trades"></tbody></table></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="card" style="position:sticky;top:calc(var(--bar-h) + 12px)">
+          <h3 class="card-title">Order ticket</h3>
+          <form class="form ticket-form" id="ticket" novalidate>
+            <div class="seg" id="sideSeg" role="group" aria-label="Side" style="width:100%"><button type="button" data-side="BUY" class="on buy" style="flex:1">Buy</button><button type="button" data-side="SELL" class="sell" style="flex:1">Sell</button></div>
+            <label>Symbol<div class="search" style="min-width:0"><input id="tSymbol" type="text" value="RELIANCE" aria-label="Symbol" /></div></label>
+            <div class="row" style="justify-content:space-between"><span class="help">Last price</span><b class="mono" id="tLtp">–</b></div>
+            <div class="form-grid">
+              <label>Product<select id="tProduct"><option value="MIS">Intraday (MIS)</option><option value="CNC">Delivery (CNC)</option></select></label>
+              <label>Order type<select id="tType"><option value="MARKET">Market</option><option value="LIMIT">Limit</option><option value="SL">Stop-loss</option></select></label>
+              <label>Quantity<input id="tQty" type="number" min="1" step="1" value="10" /></label>
+              <label id="priceWrap" hidden>Limit price<input id="tPrice" type="number" min="0" step="0.05" /></label>
+              <label id="trigWrap" hidden>Trigger price<input id="tTrig" type="number" min="0" step="0.05" /></label>
+            </div>
+            <label>Setup tag <span class="help">(optional, shows in the journal)</span><input id="tTag" type="text" maxlength="40" placeholder="e.g. breakout, pullback" /></label>
+            <ul class="kv" id="estimate" aria-live="polite"></ul>
+            <p class="note err" id="tErr" hidden></p>
+            <button type="submit" class="btn primary" id="tSubmit" style="padding:10px">Place paper order</button>
+          </form>
+          <p class="help" style="margin-top:10px">Market orders fill at the last price with a small adverse slippage. Limit and stop orders wait for the price. Intraday (MIS) positions get 5x leverage and are squared off at 15:20 IST on live data. Charges are estimates.</p>
+        </article>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/vendor/lightweight-charts.js"></script>
+  <script src="shared/ta.js"></script>
+  <script src="shared/condition.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/pages/paper.js"></script>
+</body>
+</html>
