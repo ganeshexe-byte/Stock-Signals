@@ -24,7 +24,7 @@ Open http://127.0.0.1:3000.
 
 | Mode | When | Data |
 |---|---|---|
-| Simulated | No Angel One credentials in `.env` | Random-walk prices. A red banner says **SIMULATED DATA**. Use it to try the app only. Prices are not realistic. |
+| Simulated | No Angel One credentials in `.env` | Random-walk prices. A red banner says **SIMULATED DATA**. Use it to try the app only. Prices are not realistic. Like the real market, they only move Mon-Fri 09:15-15:30 IST. Add `MOCK_ALWAYS_LIVE=true` to `.env` to keep them moving at any hour. |
 | Live | All four `ANGEL_*` values set | Real-time ticks, candles and option chain from Angel One SmartAPI |
 
 ### Setting up Angel One SmartAPI
@@ -52,12 +52,26 @@ Keep `.env` private. It is in `.gitignore`.
 |---|---|
 | Dashboard (`index.html`) | Index cards, Nifty chart, daily analysis, scanner previews, paper summary, sectors, breadth |
 | Index detail (`market.html?s=NIFTY`) | Also BANKNIFTY, SENSEX, INDIAVIX. Condition cards, chart, levels, indicators, option chain, constituents |
-| Charts | Any NSE stock, 1m to 1W, overlays, custom indicator editor |
+| Charts | Any NSE stock, 1m to 1W, overlays, custom indicator editor, plus reviews, outlook and data tables for that stock |
 | Daily Analysis | All indices side by side, saved snapshots with hit/miss tally |
 | Scanners | Intraday (live quotes), Swing and Long term (daily candles) |
 | Paper Trading | Order ticket (Market / Limit / SL, Intraday or Delivery), positions, orders, trades |
 | Watchlist | Live prices, buy / sell / chart shortcuts |
 | Journal | Auto-filled from closed trades; tags, emotion, rating, notes; performance by market condition |
+
+## When the market is closed
+
+Nothing goes blank. Prices, charts and conditions show the **last completed session**, and a banner at the top says so and when the market opens next. In live mode the last prices are also saved to `data/lastquotes.json`, so a restart on a weekend still shows data until the first live tick.
+
+Every index page (and the Charts page, for any stock) has a **Past performance and outlook** section with three tabs:
+
+- **Previous session, week, month:** open, high, low, close, change, range, where it closed in its range, and the bar pattern (inside bar, higher high and higher low, and so on). The current week and month so far are shown too.
+- **Next session, week, month:** pivot levels (R1-R3, S1-S3), the central pivot range, a typical range (1 ATR), a rule-based bias with the checks behind it, and if-then scenarios.
+- **Data tables:** daily (60), weekly (52) and monthly (24) tables, with CSV download.
+
+The Daily Analysis page also has a **Past and next** table across all four indices. For India VIX the bias reads Rising / Falling / Flat, because a rising VIX is not "Bullish".
+
+The "next" views are **levels and scenarios built from past prices with fixed rules. They are not forecasts.** The code is in `server/periods.js`.
 
 ## How market conditions are computed
 
@@ -105,7 +119,7 @@ The editor includes three working examples and a test-run before saving. Indicat
 - Live Angel One mode is untested.
 - No FII/DII data and no global cues (GIFT Nifty, US markets).
 - Long-term scanner is technical only. Fundamentals are not available from SmartAPI.
-- Exchange holidays are not handled. The app treats every Monday to Friday as a trading day.
+- Exchange holidays are not handled. The app treats every Monday to Friday as a trading day, so a "next session" may fall on a holiday.
 - Option chain shows the nearest expiry, ±10 strikes, with OI, PCR, max pain and support/resistance. No Greeks.
 - BSE index candles (Sensex) may be missing from the Angel API; the page shows "No data" instead of failing.
 - Simulated prices are random and unrealistic.

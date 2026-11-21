@@ -152,7 +152,8 @@
         <ul class="chips" id="chips"></ul>
         <span class="changed" id="changed"></span>
       </div>
-      <div class="sim-banner" id="simBanner" hidden>SIMULATED DATA: prices are random and for layout/testing only. Add your Angel One credentials in .env for live data.</div>`;
+      <div class="sim-banner" id="simBanner" hidden>SIMULATED DATA: prices are random and for layout/testing only. Add your Angel One credentials in .env for live data.</div>
+      <div class="closed-banner" id="closedBanner" role="status" hidden></div>`;
     $('#nav').innerHTML = `<ul>${NAV.map(([href, label, key]) => `<li><a href="${href}" class="${key === active ? 'active' : ''}">${label}</a></li>`).join('')}</ul><p class="sidebar-note">Paper trading only. No real orders are ever placed.</p>`;
     if ('ResizeObserver' in window) new ResizeObserver(() => document.documentElement.style.setProperty('--bar-h', `${bar.offsetHeight}px`)).observe(bar);
     $$('.index', bar).forEach((li) => { li._price = $('.index-val', li); li._chg = $('.index-chg', li); });
@@ -163,10 +164,27 @@
     const txt = $('#mktText'), dot = $('#liveDot');
     if (!txt) return;
     const open = st && st.marketOpen;
-    txt.textContent = !state.conn ? 'Reconnecting…' : st && st.simulated ? 'Simulated' : open ? 'Market Live' : 'Market Closed';
-    dot.className = `live-dot ${state.conn && (open || (st && st.simulated)) ? '' : 'off'}`;
-    const sim = $('#simBanner'); if (sim) sim.hidden = !(st && st.simulated);
-    if (st && st.error && !st.simulated) txt.textContent = `Feed issue`;
+    const sim = st && st.simulated;
+    txt.textContent = !state.conn ? 'Reconnecting…' : sim ? (open ? 'Simulated · Live' : 'Simulated · Closed') : open ? 'Market Live' : 'Market Closed';
+    dot.className = `live-dot ${state.conn && open ? '' : 'off'}`;
+    const simBanner = $('#simBanner'); if (simBanner) simBanner.hidden = !sim;
+    if (st && st.error && !sim) txt.textContent = `Feed issue`;
+    const cb = $('#closedBanner');
+    if (cb) {
+      cb.hidden = !(state.conn && st && !open);
+      if (!cb.hidden) cb.textContent = `Market is closed. Prices, conditions and charts show the last completed session. ${nextOpenText()}`;
+    }
+  }
+
+  // "Opens today 09:15 IST", "Opens tomorrow 09:15 IST", "Opens Monday 09:15 IST" (exchange holidays are not known)
+  function nextOpenText() {
+    const d = new Date(Date.now() + IST * 1000);
+    const dow = d.getUTCDay(), mins = d.getUTCHours() * 60 + d.getUTCMinutes();
+    if (dow >= 1 && dow <= 5 && mins < 9 * 60 + 15) return 'Opens today at 09:15 IST.';
+    let ahead = 1;
+    while ([0, 6].includes((dow + ahead) % 7)) ahead++;
+    const day = ahead === 1 ? 'tomorrow' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][(dow + ahead) % 7];
+    return `Opens ${day} at 09:15 IST.`;
   }
 
   function renderIndex(q) {

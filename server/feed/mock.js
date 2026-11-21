@@ -2,7 +2,11 @@
 // can be run and tested without a broker login. Never use this to make trading decisions.
 const { BaseFeed, INTERVAL_SECS } = require('./base');
 const { INDICES, STOCKS } = require('../universe');
-const { istNow, istDayStart, IST } = require('../util');
+require('../config'); // loads .env
+const { istNow, istDayStart, IST, marketOpen } = require('../util');
+// Like the real exchange, simulated prices only move Mon-Fri 09:15-15:30 IST.
+// Set MOCK_ALWAYS_LIVE=true in .env to keep them moving at any hour (handy for testing).
+const ALWAYS_LIVE = String(process.env.MOCK_ALWAYS_LIVE || '').toLowerCase() === 'true';
 const { summarize } = require('../optionmath');
 const TA = require('../../public/shared/ta.js');
 
@@ -123,6 +127,7 @@ class MockFeed extends BaseFeed {
   tickAll() { for (const st of this.sym.values()) this.step(st); }
 
   step(st) {
+    if (!ALWAYS_LIVE && !marketOpen()) return; // market closed: keep the last session's data as it is
     const { r } = st;
     const nowSec = Math.floor(Date.now() / 1000);
     const today = istDayStart(nowSec);
@@ -146,10 +151,16 @@ class MockFeed extends BaseFeed {
   }
 
   publish(st) {
-    const d = st.day;
+    let d = st.day, close = st.prevClose;
+    // No session today (weekend / before the open): show the last completed session, like a real feed does
+    if (!d && st.daily.length) {
+      const n = st.daily.length;
+      d = st.daily[n - 1];
+      close = n > 1 ? st.daily[n - 2].c : d.o;
+    }
     this.setQuote(st.symbol, {
-      ltp: st.ltp, open: d ? d.o : st.ltp, high: d ? d.h : st.ltp, low: d ? d.l : st.ltp, close: st.prevClose,
-      vol: d ? d.v : 0, vwap: d && d.v ? d.pv / d.v : st.ltp,
+      ltp: st.ltp, open: d ? d.o : st.ltp, high: d ? d.h : st.ltp, low: d ? d.l : st.ltp, close,
+      vol: d ? d.v : 0, vwap: d && d.v && d.pv ? d.pv / d.v : st.ltp,
     });
   }
 

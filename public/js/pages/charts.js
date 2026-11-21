@@ -44,6 +44,7 @@ return {
   chart.setCustom(custom);
 
   /* ---------- symbol + live header ---------- */
+  let periods = null;
   function setSymbol(s) {
     s = (s || '').toUpperCase().trim();
     if (!s) return;
@@ -55,6 +56,7 @@ return {
     $('#sellBtn').href = `paper.html?symbol=${encodeURIComponent(sym)}&side=SELL`;
     $('#qPrice').textContent = '–'; $('#qChg').textContent = '';
     chart.setSymbol(sym);
+    if (periods) periods.setSymbol(sym);
     api(`/api/quotes?symbols=${encodeURIComponent(sym)}`).then((r) => { if (r[sym]) { App.state.quotes[sym] = r[sym]; renderQuote(r[sym]); } }).catch(() => {});
   }
   function renderQuote(q) {
@@ -65,6 +67,7 @@ return {
   App.on('quote', (q) => { if (q.symbol === sym) renderQuote(q); });
   App.symbolInput($('#symInput'), setSymbol);
   setSymbol(sym);
+  periods = Periods.mount($('#periods'), sym);
 
   $('#watchBtn').addEventListener('click', async () => {
     try {

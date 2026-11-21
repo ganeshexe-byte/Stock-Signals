@@ -14,11 +14,26 @@ class BaseFeed extends EventEmitter {
 
   quote(symbol) { return this.quotes.get(symbol) || null; }
 
+  // Quotes saved from the previous run: shown (flagged stale) until the first live tick replaces them,
+  // so the site is never empty while the market is closed.
+  seed(saved) {
+    Object.entries(saved || {}).forEach(([s, q]) => {
+      if (q && q.ltp != null && !this.quotes.has(s)) this.quotes.set(s, { ...q, symbol: s, stale: true });
+    });
+  }
+
+  snapshot() {
+    const out = {};
+    this.quotes.forEach((q, s) => { if (q.ltp != null && !q.stale) out[s] = q; });
+    return out;
+  }
+
   info(symbol) { return bySymbol.get(symbol) || { symbol, name: symbol, exch: 'NSE', type: 'stock' }; }
 
   setQuote(symbol, q) {
     const prev = this.quotes.get(symbol) || {};
     const merged = { ...prev, ...q, symbol };
+    delete merged.stale; // a live tick replaces any quote restored from disk
     if (merged.close) {
       merged.change = merged.ltp - merged.close;
       merged.pct = merged.close ? (merged.change / merged.close) * 100 : 0;

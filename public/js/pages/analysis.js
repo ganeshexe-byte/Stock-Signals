@@ -26,6 +26,21 @@
   App.on('market', drawAll);
   drawAll(App.state.market);
 
+  async function loadPastNext() {
+    const all = [...INDICES, ['INDIAVIX', 'India VIX']];
+    const res = await Promise.allSettled(all.map(([s]) => api(`/api/periods/${s}`)));
+    $('#pastNext').innerHTML = all.map(([s, n], i) => {
+      const r = res[i];
+      if (r.status !== 'fulfilled') return `<tr><td class="l"><a class="sym" href="market.html?s=${s}">${esc(n)}</a></td><td colspan="6" class="note err">${esc(r.reason.message)}</td></tr>`;
+      const p = r.value, ch = (x) => (x ? `<td class="num ${cls(x.chgPct)}">${pct(x.chgPct)}</td>` : '<td class="num">–</td>');
+      const vix = s === 'INDIAVIX', W = { Bullish: 'Rising', Bearish: 'Falling', Sideways: 'Flat' };
+      const bias = (o) => (o ? `<td class="l">${vix ? `<span class="tag nodata">${W[o.bias.label] || o.bias.label}</span>` : tag(o.bias.label)} <span class="muted small">${esc(o.label)}</span></td>` : '<td class="l">–</td>');
+      return `<tr><td class="l"><a class="sym" href="market.html?s=${s}">${esc(n)}</a></td>${ch(p.reviews.day)}${ch(p.reviews.week)}${ch(p.reviews.month)}${bias(p.outlook.day)}${bias(p.outlook.week)}${bias(p.outlook.month)}</tr>`;
+    }).join('');
+  }
+  loadPastNext();
+  setInterval(loadPastNext, 120000);
+
   async function loadIndex() {
     try {
       const a = await api(`/api/index/${sym}`);

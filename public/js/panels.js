@@ -15,6 +15,7 @@
     }).join('');
     return `<article class="card cond-card">
       <div class="cond-head"><div><div class="tf">${esc(c.tf)}</div><div class="lab ${labelCls(c.label)}">${esc(c.label)}</div></div>${noData ? '' : `<span class="mono muted">${c.score}/100</span>`}</div>
+      ${c.session && c.session !== App.istDate(Math.floor(Date.now() / 1000)) ? `<p class="help">Based on the last session (${esc(c.session)}).</p>` : ''}
       ${noData ? `<p class="note">${esc(c.note || 'Not enough data yet')}</p>` : `<div><div class="meter" role="img" aria-label="Score ${c.score} out of 100"><i style="left:${c.score}%"></i></div><div class="meter-scale"><span>Bearish</span><span>Sideways</span><span>Bullish</span></div></div>`}
       <ul class="checks">${checks}</ul></article>`;
   }

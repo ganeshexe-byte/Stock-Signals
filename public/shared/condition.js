@@ -47,7 +47,7 @@
       chk('Change vs previous close', chg != null ? sig3(chg, 0.25, -0.25) : null, 1, chg != null ? `${chg >= 0 ? '+' : ''}${fmt(chg)}% vs prev close ${fmt(prevClose)}` : 'No previous close'),
       chk('Position in day range', pos > 0.7 ? 1 : pos < 0.3 ? -1 : 0, 1, `Price is at ${Math.round(pos * 100)}% of today's range`),
     ];
-    return finish('Intraday', checks, { vwap: vw, openingRange: { high: orH, low: orL }, dayHigh: dH, dayLow: dL });
+    return finish('Intraday', checks, { vwap: vw, openingRange: { high: orH, low: orL }, dayHigh: dH, dayLow: dL, session: TA.istDate(day[0].t) });
   }
 
   /* ---------- Short term (daily candles, ~1-2 weeks) ---------- */

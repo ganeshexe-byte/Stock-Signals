@@ -81,6 +81,8 @@
   loadAnalysis();
   setInterval(loadAnalysis, 20000);
 
+  Periods.mount($('#periods'), sym);
+
   /* ---------- option chain (indices that have options) ---------- */
   const hasOptions = sym !== 'INDIAVIX';
   $('#optionsCard').hidden = !hasOptions;

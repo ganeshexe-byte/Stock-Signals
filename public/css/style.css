@@ -572,3 +572,22 @@ details.card[open] > summary { margin-bottom: 12px; }
 .stockchart, .sc-main, .sc-panes { max-width: 100%; min-width: 0; }
 #overlayChips, #customChips, .chips { flex-wrap: wrap; }
 #overlayChips { flex: 1 1 260px; }
+
+/* closed-market banner */
+.closed-banner { margin: 0; padding: 7px 16px; font-size: 12.5px; color: var(--muted); background: rgba(245, 166, 35, .08); border-top: 1px solid rgba(245, 166, 35, .25); }
+
+/* periods: reviews, outlook, data tables */
+.mini { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; display: grid; gap: 8px; align-content: start; }
+.mini-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.mini-chg { font-family: var(--mono); font-size: 20px; font-weight: 600; white-space: nowrap; }
+.sub-title { margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.scen { display: grid; gap: 8px; }
+.scen li { display: grid; grid-template-columns: 74px 1fr; gap: 8px; font-size: 12.5px; align-items: start; }
+.scen .tag { text-align: center; }
+.why summary { cursor: pointer; font-size: 12.5px; color: var(--accent); }
+.data-table { max-height: 460px; overflow: auto; }
+.data-table thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+@media (max-width: 1100px) { .scen li { grid-template-columns: 1fr; } }
+.mini .range .bar-track { background: var(--line); }
+.mini-head > div:first-child { min-width: 0; }
+.mini-head .tag { white-space: nowrap; flex-shrink: 0; }

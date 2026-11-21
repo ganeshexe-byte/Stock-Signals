@@ -5,6 +5,7 @@ const { WebSocketServer } = require('ws');
 const cfg = require('./config');
 const feed = require('./feed');
 const analysis = require('./analysis');
+const periods = require('./periods');
 const scanners = require('./scanners');
 const paper = require('./paper');
 const journal = require('./journal');
@@ -62,6 +63,7 @@ app.get('/api/candles', wrap(async (req, res) => {
 
 app.get('/api/market', wrap(async (req, res) => res.json(await analysis.marketSummary())));
 app.get('/api/index/:symbol', wrap(async (req, res) => res.json(await analysis.indexAnalysis(req.params.symbol.toUpperCase()))));
+app.get('/api/periods/:symbol', wrap(async (req, res) => res.json(await periods.periods(req.params.symbol))));
 app.get('/api/optionchain/:symbol', wrap(async (req, res) => {
   const chain = await feed.optionChain(req.params.symbol.toUpperCase());
   if (!chain) return res.status(404).json({ error: 'No option chain for this symbol' });
@@ -152,6 +154,18 @@ setInterval(() => broadcast({ type: 'status', data: { ...feed.status, marketOpen
 paper.on('event', (event) => broadcast({ type: 'paper', event }));
 
 /* ---------- boot ---------- */
+// Remember the last prices (live mode only) so a restart while the market is closed still shows data
+if (feed.mode !== 'mock') {
+  feed.seed(store.load('lastquotes', () => ({ quotes: {} })).quotes);
+  setInterval(() => {
+    const snap = feed.snapshot();
+    if (!Object.keys(snap).length) return; // never overwrite good data with an empty snapshot
+    const saved = store.load('lastquotes', () => ({ quotes: {} }));
+    saved.quotes = { ...saved.quotes, ...snap };
+    store.save('lastquotes');
+  }, 30000);
+}
+
 (async () => {
   console.log(`Mode: ${feed.mode === 'mock' ? 'SIMULATED data (no Angel One credentials in .env)' : 'LIVE data via Angel One SmartAPI'}`);
   feed.start().catch((e) => console.error('[feed]', e.message));
